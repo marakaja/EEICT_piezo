@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build LaTeX",
+            "type": "shell",
+            "command": "pdflatex -synctex=1 -interaction=nonstopmode -file-line-error ${fileBasenameNoExtension}.tex && bibtex ${fileBasenameNoExtension} && pdflatex -synctex=1 -interaction=nonstopmode ${fileBasenameNoExtension}.tex && pdflatex -synctex=1 -interaction=nonstopmode ${fileBasenameNoExtension}.tex",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": [
+                {
+                    "owner": "latex",
+                    "fileLocation": ["relative", "${workspaceFolder}"],
+                    "pattern": {
+                        "regexp": "^(.*):(\\d+):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "message": 3
+                    }
+                }
+            ]
+        }
+    ]
+}
