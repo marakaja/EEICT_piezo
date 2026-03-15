@@ -97,7 +97,7 @@ The first of the two realized amplifiers utilizes a classical linear topology, t
 % \end{figure*}
 
 \subsection{Stability Issues with Capacitive Loads}
-Linear amplifiers with negative feedback are inherently prone to instability when driving large capacitive loads. The load capacitance forms an RC low-pass filter with the op-amp's output impedance, introducing an additional pole into the open-loop transfer function. Compensation networks, such as a series isolating isolation resistor ($R_{ISO}$) or more sophisticated Dual-Feedback loops, must be deployed to ensure high-frequency stability without compromising DC static accuracy.
+Voltage amplifiers with negative feedback are inherently prone to instability when driving large capacitive loads. The load capacitance forms an RC low-pass filter with the op-amp's output impedance, introducing an additional pole into the open-loop transfer function. Compensation networks, such as a series isolating isolation resistor ($R_{ISO}$) or more sophisticated Dual-Feedback loops, must be deployed to ensure high-frequency stability without compromising DC static accuracy. Because the feedback loop forces the output voltage to track exactly the input reference, it inherently provides excellent Power Supply Rejection Ratio (PSRR).
 
 \subsection{Power Losses and Thermal Analysis}
 A fundamental drawback of linear driving is the immense energy inefficiency. For sinusoidal driving into a purely capacitive load, the average power dissipated on the amplifier transistors is given by:
@@ -125,18 +125,18 @@ The realized Class D hardware prototype is shown in Fig. \ref{fig_dclass_board}.
 The key component is the output LC low-pass filter. When the capacitive piezoelectric load discharges, the LC filter and the switched-on transistors create a recuperation path, directing the current back into the primary bulk capacitors on the supply rail. Reactive energy loss is minimized, elevating system efficiency to 90--95\%.
 
 % Placeholder pro schema spinaneho GaN zapojeni
-% \begin{figure}[htbp]
-% \centerline{\includegraphics[width=\columnwidth]{schematic_gan.pdf}}
-% \caption{Circuit architecture of the Gallium Nitride (GaN) based full-bridge switched Class D amplifier.}
-% \label{fig_gan_sch}
-% \end{figure}
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=\columnwidth]{schematic_gan.pdf}}
+\caption{Circuit architecture of the Gallium Nitride (GaN) based full-bridge switched Class D amplifier.}
+\label{fig_gan_sch}
+\end{figure}
 
 \subsection{EMI and Dead-Time Considerations}
-High $dv/dt$ transients (for tested GaN NV6247C  up to 100\,V/ns) induce significant electromagnetic interference (EMI). Moreover, a perfectly calibrated dead-time (the microscopic gap preventing shoot-through) is necessary. GaN technology enables dead-time reduction to under 5\,ns, thus approximating the analog purity reproduction without losing phenomenal energy efficiency.
+High $dv/dt$ transients (for tested GaN NV6247C  up to 100\,V/ns) induce significant electromagnetic interference (EMI). Moreover, a perfectly calibrated dead-time (the nanosecond-scale delay preventing shoot-through) is necessary. GaN technology enables dead-time reduction to under 5\,ns, thus approximating the analog purity reproduction without losing phenomenal energy efficiency.
 \subsection{Linearity and the (Non)Necessity of Feedback}
 A critical parameter in power amplifiers is linearity. Unlike Class AB amplifiers, where feedback is mandatory to suppress crossover distortion and stabilize gain, Class D topologies suffer from non-linearities primarily dictated by dead-time duration, switching delays, and finite device on-resistance. In traditional audio Class D applications, complex analog feedback loops—taken either before or after the LC filter—are implemented to correct these distortions and improve the Power Supply Rejection Ratio (PSRR).
 
-However, in the context of driving highly reactive and resonant piezoelectric actuators, implementing a real-time analog feedback loop across an LC filter poses severe stability risks. The combination of the multi-order LC network and the highly frequency-dependent impedance of the piezo element (per the BVD model) creates complex pole-zero structures leading to immense phase shifts. Due to the nearly ideal switching characteristics of GaN devices (microscopic dead-time, very low $R_{DS(on)}$, and zero reverse recovery charge $Q_{rr}$), the open-loop linearity of the power stage is natively exceptionally high. Therefore, closed-loop analog feedback becomes largely redundant and often counterproductive. Any residual structural non-linearities of the piezoelectric displacement are more efficiently compensated in the digital domain through mathematical pre-distortion of the modulation signal (feed-forward control) rather than risking hard-to-tame oscillations with an analog feedback loop. Consequently, the GaN driver operates reliably in an open-loop configuration.
+However, in the context of driving highly reactive and resonant piezoelectric actuators, implementing a real-time analog feedback loop across an LC filter poses severe stability risks and degrades the inherent efficiency of the Class D driver. The combination of the multi-order LC network and the highly frequency-dependent impedance of the piezo element (per the BVD model) creates complex pole-zero structures leading to immense phase shifts. Operating purely in open-loop sacrifices PSRR, meaning the output stage becomes directly dependent on the supply rail stability. However, due to the nearly ideal switching characteristics of GaN devices (nanosecond-scale dead-time, very low $R_{DS(on)}$, and zero reverse recovery charge $Q_{rr}$), the open-loop linearity of the power stage is natively exceptionally high. Therefore, closed-loop analog feedback becomes largely redundant and often counterproductive. Any residual structural non-linearities of the piezoelectric displacement are more efficiently compensated in the digital domain through mathematical pre-distortion of the modulation signal (feed-forward control) rather than risking hard-to-tame oscillations with an analog feedback loop. Consequently, the GaN driver operates reliably in an open-loop configuration.
 
 \subsection{LC Output Filter Design and Voltage Ripple}
 The output LC low-pass filter ($L_f$, $C_f$) is unequivocally the most critical passive subsystem of the Class D topology. Its primary function is to demodulate the high-frequency PWM switching signal back into the desired analog baseband waveform while attenuating the switching frequency carrier ($f_{sw}$) to bound the output voltage ripple ($\Delta V_{out}$).

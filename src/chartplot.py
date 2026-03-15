@@ -86,7 +86,7 @@ ax_mag.set_ylabel(r'Impedance Magnitude $|Z|$ ($\Omega$)')
 ax_mag.grid(True, which="both", ls="--", alpha=0.5)
 ax_mag.legend(loc='best', fontsize='small')
 
-fig.suptitle('Piezoelectric Actuator Impedance Characteristics')
+#fig.suptitle('Piezoelectric Actuator Impedance Characteristics')
 ax_mag.set_xlim(freq_plot.min(), 300e3)  # Limit x-axis to 300 kHz for better visibility
 fig.tight_layout(rect=[0, 0, 1, 0.97])
 
