@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import numpy as np
 
 csv_path = r'c:\Users\Mara\OneDrive - VUT\Dokumenty\EAGLE\projects\PiezoDriver\Piezo\Trace02.csv'
@@ -73,8 +74,11 @@ ax_phase.axvline(x=res_freq, color='green', linestyle='-', label='Resonance Freq
 ax_phase.semilogx(freq_plot, phase_plot, color='tab:red', linewidth=1.5, linestyle='--', label='Phase measured')
 ax_phase.semilogx(freq_plot, phase_bvd, color='tab:orange', linewidth=1.2, linestyle='-.', label='Phase BVD theory')
 ax_phase.set_ylabel(r'Phase $\theta$ ($^\circ$)')
+ax_phase.yaxis.set_major_locator(ticker.MultipleLocator(45))
+ax_phase.yaxis.set_minor_locator(ticker.AutoMinorLocator(2)) # Less lines
+ax_phase.xaxis.set_minor_locator(ticker.LogLocator(base=10.0, subs=(2, 4, 6, 8))) # Less X axis clutter!
 ax_phase.grid(True, which="both", ls="--", alpha=0.5)
-ax_phase.legend(loc='best', fontsize='small')
+ax_phase.legend(loc='upper left', fontsize='small')
 ax_phase.text(res_freq, ax_phase.get_ylim()[1] * 0.9, f'{res_freq:.1f} Hz', color='green', rotation=90, verticalalignment='top', horizontalalignment='right')
 
 # Magnitude chart (second)
@@ -83,11 +87,16 @@ ax_mag.loglog(freq_plot, z_mag_plot, color='tab:blue', linewidth=1.5, label='|Z|
 ax_mag.loglog(freq_plot, z_bvd_mag, color='black', linewidth=1.3, linestyle=':', label='|Z| BVD theory')
 ax_mag.set_xlabel('Frequency (Hz)')
 ax_mag.set_ylabel(r'Impedance Magnitude $|Z|$ ($\Omega$)')
+ax_mag.yaxis.set_major_locator(ticker.LogLocator(base=10.0, numticks=10))
+ax_mag.yaxis.set_minor_locator(ticker.LogLocator(base=10.0, subs=(2, 4, 6, 8))) # Keep exactly 4 minor lines + 1 major = 5 per decade!
+ax_mag.xaxis.set_minor_locator(ticker.LogLocator(base=10.0, subs=(2, 4, 6, 8))) # Less X axis clutter!
 ax_mag.grid(True, which="both", ls="--", alpha=0.5)
-ax_mag.legend(loc='best', fontsize='small')
+ax_mag.legend(loc='lower left', fontsize='small')
+ax_mag.set_ylim(10, 1e6)  # Set y-axis limits for better visibility of the resonance peak
+
 
 #fig.suptitle('Piezoelectric Actuator Impedance Characteristics')
-ax_mag.set_xlim(freq_plot.min(), 300e3)  # Limit x-axis to 300 kHz for better visibility
+ax_mag.set_xlim(1e3, 300e3)  # Limit x-axis to 300 kHz for better visibility
 fig.tight_layout(rect=[0, 0, 1, 0.97])
 
 # Save as PDF for high-quality IEEEtran inclusion

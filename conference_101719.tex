@@ -3,6 +3,7 @@
 \usepackage{graphicx}
 \usepackage{cite}
 \usepackage{booktabs}
+\usepackage{url}
 
 
 \begin{document}
@@ -19,7 +20,7 @@ marekkarlicek@gmail.com}
 \maketitle
 
 \begin{abstract}
-The development of modern mechatronics, precise positioning, and ultrasonic technologies is inherently linked to the use of piezoelectric actuators. While these elements offer excellent mechanical parameters, the design of their control electronics represents one of the most complex challenges in power electronics. This paper presents a detailed comparative analysis between conventional analog linear Class AB amplifiers and modern switched Class D topologies utilizing Gallium Nitride (GaN) wide-bandgap semiconductors. The physical model of the piezoelectric load is discussed based on real impedance measurements, revealing its frequency-dependent capacitive and resonant nature. Furthermore, the paper details the digital control infrastructure utilizing an STM32 microcontroller and high-resolution timer (HRTIM) to synthesize precise voltage waveforms. The transition to GaN-based full-bridge topology enables energy recuperation, significantly increasing system efficiency over 90\% and minimizing thermal dissipation typical for linear operating regions.
+The development of modern mechatronics, precise positioning, and ultrasonic technologies is inherently linked to the use of piezoelectric actuators. While these elements offer excellent mechanical parameters, the design of their control electronics represents one of the most complex challenges in power electronics. This paper presents a detailed comparative analysis between conventional analog linear Class AB amplifiers and modern switched Class D topologies utilizing Gallium Nitride (GaN) wide-bandgap semiconductors. The physical model of the piezoelectric load is discussed based on real impedance measurements, revealing its frequency-dependent capacitive and resonant nature. Furthermore, the paper details the digital control infrastructure utilizing an STM32 microcontroller and high-resolution timer (HRTIM) to synthesize precise voltage waveforms. The transition to GaN-based full-bridge topology enables energy recuperation, significantly increasing system efficiency to over 90\% and minimizing thermal dissipation typical for linear operating regions.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -33,12 +34,12 @@ Although the piezoelectric actuators themselves offer excellent mechanical param
 
 For low-power applications, such as tactile feedback and haptics in mobile consumer electronics, semiconductor manufacturers have introduced dedicated monolithic piezoelectric drivers (e.g., Texas Instruments DRV2667 \cite{ti_drv2667} or specialized energy-recovery ICs from Bor\'{e}as Technologies \cite{boreas_bos1901}). These highly integrated chips typically employ a built-in boost converter followed by a low-voltage Class AB or rudimentary Class D amplifying stage. However, while exceptionally compact and suited for short transient pulses, they are fundamentally limited in continuous output power and voltage swing. Thus, they are insufficient for heavy-duty industrial or high-end mechatronic applications.
 
-The combination of high voltage, high frequency, and capacitive load nature implies that the driving amplifier must be capable of delivering and subsequently absorbing massive amounts of reactive power. During charging, the current flows from the source to the load, but during discharging, this charge returns to the amplifier. Historically and conventionally, analog Class AB linear power amplifiers have been used for these purposes. These amplifiers provide unparalleled signal purity and minimal harmonic distortion, but their main critical drawback is very low energy efficiency. All energy returning from the capacitive load must be dissipated as heat in the linear amplifier's output transistors, necessitating massive and heavy cooling systems.
+The combination of high voltage, high frequency, and capacitive nature of the load implies that the driving amplifier must be capable of delivering and subsequently absorbing massive amounts of reactive power. During charging, the current flows from the source to the load, but during discharging, this charge returns to the amplifier. Historically and conventionally, analog Class AB linear power amplifiers have been used for these purposes. These amplifiers provide unparalleled signal purity and minimal harmonic distortion, but their main critical drawback is very low energy efficiency. All energy returning from the capacitive load must be dissipated as heat in the linear amplifier's output transistors, necessitating massive and heavy cooling systems.
 
 With the advent of modern wide-bandgap (WBG) semiconductors, specifically Gallium Nitride (GaN), new possibilities for driver construction are opening up. Utilizing switched topologies in Class D allows for the realization of amplifiers that can recuperate energy from the capacitive load back to the power supply, thereby increasing theoretical and practical system efficiency from below 30\% to values exceeding 90\%. Furthermore, the switching speed of GaN transistors allows for modulation frequencies in the megahertz range \cite{HfGan_power_integration}, pushing the characteristics of switched amplifiers much closer to the ideal of linear circuits.
 
 \section{Physical Nature and Electro-Mechanical Modeling of Piezoelectric Elements}
-To make a well-founded comparison of different amplifier topologies, it is primarily necessary to perfectly understand the load these amplifiers drive. The standard approach for engineering design of electronic circuits is the use of the Butterworth-Van Dyke (BVD) equivalent circuit.
+To make a well-founded comparison of different amplifier topologies, it is first necessary to perfectly understand the load these amplifiers drive. The standard approach for engineering design of electronic circuits is the use of the Butterworth-Van Dyke (BVD) equivalent circuit.
 
 \subsection{Butterworth-Van Dyke (BVD) Equivalent Model}
 The BVD model divides the actuator into two parallel branches, separating static electrical properties from dynamic mechanical properties:
@@ -62,7 +63,7 @@ Real impedance characteristics were measured using a Keysight E4990A precision i
 \label{fig_impedance}
 \end{figure}
 
-In the low-frequency region below resonance, the impedance module drops logarithmically with increasing frequency, and the phase holds strictly around -90$^{\circ}$. The load capacitance remains constant at an average value of approximately 7.05\,nF. This proves that below resonance, the motional branch of the BVD model exhibits no activity, and the entire actuator behaves as an ideal capacitor.
+In the low-frequency region below resonance, the impedance magnitude drops logarithmically with increasing frequency, and the phase holds strictly around -90$^{\circ}$. The load capacitance remains constant at an average value of approximately 7.05\,nF. This proves that below resonance, the motional branch of the BVD model exhibits no activity, and the entire actuator behaves as an ideal capacitor.
 
 Around the series-resonant region, the impedance reaches a local minimum and the phase transitions rapidly, indicating a shift from predominantly capacitive behavior toward a more resistive/inductive response. Near anti-resonance, the impedance increases toward a local maximum. Even without full-curve overlay in Fig. \ref{fig_impedance}, the measured resonance behavior has direct implications for amplifier design: off-resonance driving is predominantly reactive, while operation near resonance approaches a higher resistive contribution ($R_1$).
 
@@ -97,7 +98,7 @@ The first of the two realized amplifiers utilizes a classical linear topology, t
 % \end{figure*}
 
 \subsection{Stability Issues with Capacitive Loads}
-Voltage amplifiers with negative feedback are inherently prone to instability when driving large capacitive loads. The load capacitance forms an RC low-pass filter with the op-amp's output impedance, introducing an additional pole into the open-loop transfer function. Compensation networks, such as a series isolating isolation resistor ($R_{ISO}$) or more sophisticated Dual-Feedback loops, must be deployed to ensure high-frequency stability without compromising DC static accuracy. Because the feedback loop forces the output voltage to track exactly the input reference, it inherently provides excellent Power Supply Rejection Ratio (PSRR).
+Voltage amplifiers with negative feedback are inherently prone to instability when driving large capacitive loads. The load capacitance forms an RC low-pass filter with the op-amp's output impedance, introducing an additional pole into the open-loop transfer function. Compensation networks, such as a series isolation resistor ($R_{ISO}$) or more sophisticated Dual-Feedback loops, must be deployed to ensure high-frequency stability without compromising DC static accuracy. Because the feedback loop forces the output voltage to track the input reference exactly, it inherently provides excellent Power Supply Rejection Ratio (PSRR).
 
 \subsection{Power Losses and Thermal Analysis}
 A fundamental drawback of linear driving is the immense energy inefficiency. For sinusoidal driving into a purely capacitive load, the average power dissipated on the amplifier transistors is given by:
@@ -114,27 +115,27 @@ The switched amplifier connects two integrated GaN half-bridges (forming a Full-
 
 In practical hardware, this concept can be implemented using compact integrated GaN power stages, for example devices from the Navitas GaNFast family. A representative example is the NV6247C \cite{navitas_nv6247c}, which is intended for high-frequency half-bridge operation and integrates the fast GaN switching devices together with the associated gate-drive and protection infrastructure into a single compact power IC. Using two such half-bridge modules simplifies the realization of a full-bridge piezo driver, reduces parasitic loop inductance compared with a discrete implementation, and helps preserve the fast switching edges required for efficient operation.
 
-The realized Class D hardware prototype is shown in Fig. \ref{fig_dclass_board}.
+% The realized Class D hardware prototype is shown in Fig. \ref{fig_dclass_board}.
 
-\begin{figure}[htbp]
-\centerline{\includegraphics[width=0.7\columnwidth]{Dclass.png}}
-\caption{Implemented Class D GaN driver board used for piezoelectric actuator excitation experiments.}
-\label{fig_dclass_board}
-\end{figure}
+% \begin{figure}[htbp]
+% \centerline{\includegraphics[width=0.7\columnwidth]{Dclass.png}}
+% \caption{Implemented Class D GaN driver board used for piezoelectric actuator excitation experiments.}
+% \label{fig_dclass_board}
+% \end{figure}
 
 The key component is the output LC low-pass filter. When the capacitive piezoelectric load discharges, the LC filter and the switched-on transistors create a recuperation path, directing the current back into the primary bulk capacitors on the supply rail. Reactive energy loss is minimized, elevating system efficiency to 90--95\%.
 
 % Placeholder pro schema spinaneho GaN zapojeni
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=\columnwidth]{schematic_gan.pdf}}
+\centerline{\includegraphics[width=0.85\columnwidth]{src/GAN_block.pdf}}
 \caption{Circuit architecture of the Gallium Nitride (GaN) based full-bridge switched Class D amplifier.}
 \label{fig_gan_sch}
 \end{figure}
 
 \subsection{EMI and Dead-Time Considerations}
-High $dv/dt$ transients (for tested GaN NV6247C  up to 100\,V/ns) induce significant electromagnetic interference (EMI). Moreover, a perfectly calibrated dead-time (the nanosecond-scale delay preventing shoot-through) is necessary. GaN technology enables dead-time reduction to under 5\,ns, thus approximating the analog purity reproduction without losing phenomenal energy efficiency.
+High $dv/dt$ transients (for tested GaN NV6247C  up to 100\,V/ns) induce significant electromagnetic interference (EMI). Moreover, a perfectly calibrated dead-time (the nanosecond-scale delay preventing shoot-through) is necessary. GaN technology enables dead-time reduction to under 5\,ns, thus approximating the purity of analog reproduction without losing phenomenal energy efficiency.
 \subsection{Linearity and the (Non)Necessity of Feedback}
-A critical parameter in power amplifiers is linearity. Unlike Class AB amplifiers, where feedback is mandatory to suppress crossover distortion and stabilize gain, Class D topologies suffer from non-linearities primarily dictated by dead-time duration, switching delays, and finite device on-resistance. In traditional audio Class D applications, complex analog feedback loops—taken either before or after the LC filter—are implemented to correct these distortions and improve the Power Supply Rejection Ratio (PSRR).
+A critical parameter in power amplifiers is linearity. Unlike Class AB amplifiers, where feedback is mandatory to suppress crossover distortion and stabilize gain, Class D topologies suffer from non-linearities primarily dictated by dead-time duration, switching delays, and finite device on-resistance. In traditional audio Class D applications, complex analog feedback loops---taken either before or after the LC filter---are implemented to correct these distortions and improve the Power Supply Rejection Ratio (PSRR).
 
 However, in the context of driving highly reactive and resonant piezoelectric actuators, implementing a real-time analog feedback loop across an LC filter poses severe stability risks and degrades the inherent efficiency of the Class D driver. The combination of the multi-order LC network and the highly frequency-dependent impedance of the piezo element (per the BVD model) creates complex pole-zero structures leading to immense phase shifts. Operating purely in open-loop sacrifices PSRR, meaning the output stage becomes directly dependent on the supply rail stability. However, due to the nearly ideal switching characteristics of GaN devices (nanosecond-scale dead-time, very low $R_{DS(on)}$, and zero reverse recovery charge $Q_{rr}$), the open-loop linearity of the power stage is natively exceptionally high. Therefore, closed-loop analog feedback becomes largely redundant and often counterproductive. Any residual structural non-linearities of the piezoelectric displacement are more efficiently compensated in the digital domain through mathematical pre-distortion of the modulation signal (feed-forward control) rather than risking hard-to-tame oscillations with an analog feedback loop. Consequently, the GaN driver operates reliably in an open-loop configuration.
 
@@ -194,7 +195,7 @@ The measured transfer behavior between programmed PWM duty cycle and resulting o
 \label{fig_linearity}
 \end{figure}
 \section{Conclusion}
-The design of power electronics for piezoelectric systems is an inherent compromise between signal reconstruction purity and thermodynamic efficiency limits. While analog linear Class AB amplifiers offer peak linearity, their destructive thermal profile prevents scaling in mobile devices. The GaN-based Class D full-bridge switches bring a paradigm shift, resolving reactive energy dissipation through active recuperation and microscopic switching losses. Precise modulation control via high-resolution timers on modern microcontrollers bridges the gap between digital processing precision and immense power delivery demands. In the demonstrated use case, this architecture provides a practical platform for injecting repeatable mechanical excitation into a metallic structure and studying the propagation of the resulting acoustic wave with controlled electrical drive conditions.
+The design of power electronics for piezoelectric systems is an inherent compromise between signal reconstruction purity and thermodynamic efficiency limits. While analog linear Class AB amplifiers offer peak linearity, their destructive thermal profile prevents scaling in mobile devices. The GaN-based Class D full-bridge switches bring a paradigm shift, resolving reactive energy dissipation through active recuperation and negligible switching losses. Precise modulation control via high-resolution timers on modern microcontrollers bridges the gap between digital processing precision and immense power delivery demands. In the demonstrated use case, this architecture provides a practical platform for injecting repeatable mechanical excitation into a metallic structure and studying the propagation of the resulting acoustic wave under controlled electrical drive conditions.
 
 % Inicializace BibTeX citací
 \bibliographystyle{IEEEtran}

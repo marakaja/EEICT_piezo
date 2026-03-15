@@ -81,10 +81,8 @@ S.~Sherrit, S.~P. Leary, B.~P. Dolgin, and Y.~Bar-Cohen, ``Comparison of the
 \BIBentrySTDinterwordspacing
 
 \bibitem{navitas_nv6247c}
-\BIBentryALTinterwordspacing
 \emph{{NV6247C} Datasheet}, Navitas Semiconductor, 2024, final revision
-  05-08-2024. [Online]. Available: \url{https://navitassemi.com/nv6247c/}
-\BIBentrySTDinterwordspacing
+  05-08-2024.
 
 \bibitem{LC_filter_design}
 \BIBentryALTinterwordspacing
