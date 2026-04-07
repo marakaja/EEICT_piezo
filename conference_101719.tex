@@ -56,7 +56,7 @@ Real impedance characteristics were measured using a Keysight E4990A precision i
 
 % Placeholder pro vlozeny graf z Pythonu (Trace02.csv)
 \begin{figure}[htbp]
-\centerline{\includegraphics[width=1\columnwidth]{src/impedance_graph.pdf}}
+\centerline{\includegraphics[width=\columnwidth]{src/impedance_graph.pdf}}
 \caption{Measured impedance magnitude and phase of the piezoelectric actuator; the series-resonant frequency is marked (Keysight E4990A data).}
 \label{fig_impedance}
 \end{figure}
@@ -149,7 +149,7 @@ For the studied application, the practical objective is not generic real-time si
 
 This approach is particularly effective when the system repeatedly amplifies a single fixed burst or pulse sequence. Once the response of the complete chain consisting of the PWM modulator, GaN power stage, output filter, interconnect, and piezoelectric load has been measured, the stored excitation vector can be adjusted offline and replayed identically in subsequent experiments. The method therefore shifts the optimization problem from real-time adaptive filtering to offline identification and refinement of a deterministic waveform, which is fully adequate for laboratory excitation of acoustic waves in solid metallic specimens.
 
-The measured transfer behavior between programmed timer compare register values (CMP) and resulting output voltage is shown in Fig. \ref{fig_linearity}; duty cycle can be obtained as $d = CMP/PER$.
+The measured transfer behavior between programmed timer compare register values (CMP) and resulting output voltage is shown in Fig. \ref{fig_linearity}; duty cycle can be obtained as $d~=~CMP/PER$.
 
 \begin{figure}[htbp]
 \centerline{\includegraphics[width=1\columnwidth]{lintest.png}}
