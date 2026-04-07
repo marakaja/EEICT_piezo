@@ -5,13 +5,24 @@
 \usepackage{booktabs}
 \usepackage{url}
 
+% AUTHOR COMMENTS: 
+% The paper mentions the use of unipolar PWM modulation in a full-bridge topology; however, Fig. 2 appears to correspond rather to a bipolar switching scheme. This inconsistency should be clarified.
+
+% ✅ Fig. 3 is intended to demonstrate the linear relationship between PWM duty cycle and output voltage; however, the presence of multiple curves is not sufficiently explained.
+
+% ✅ Furthermore, the x-axis is described as representing the PWM duty cycle. However, the plotted values appear to correspond to raw timer register values. It should be corrected for better understanding.
+
+% ✅ The sources of the presented formulas should be properly cited.
+
+% ✅ Finally, the correct name of the faculty should be stated in the heading.
+
 
 \begin{document}
 \title{Advanced Topologies of Drivers for Piezoelectric Actuators: Comparative Analysis of Linear and GaN Switched Amplifiers}
 
 \author{
 \IEEEauthorblockN{Marek Karlicek}
-\IEEEauthorblockA{Faculty of Electronics, Department of Physics\\
+\IEEEauthorblockA{Faculty of Electrical Engineering and Communication, Department of Physics\\
 Brno University of Technology\\
 Brno, Czechia\\
 marekkarlicek@gmail.com}
@@ -51,7 +62,9 @@ The BVD model divides the actuator into two parallel branches, separating static
 The impedance of the entire BVD circuit $Z(\omega)$ as a function of angular frequency $\omega = 2\pi f$ is expressed as \cite{bvd_model_analysis}:
 \begin{equation}
 Z(\omega) = \frac{1}{j\omega C_0 + \frac{1}{R_1 + j\omega L_1 + \frac{1}{j\omega C_1}}}
+\label{eq:bvd_impedance}
 \end{equation}
+Equation \eqref{eq:bvd_impedance} follows the standard BVD representation reported in \cite{bvd_model_analysis}.
 
 \subsection{Analysis of Real Impedance Characteristics}
 Real impedance characteristics were measured using a Keysight E4990A precision impedance analyzer \cite{keysight_e4990a}.
@@ -104,14 +117,16 @@ Voltage amplifiers with negative feedback are inherently prone to instability wh
 A fundamental drawback of linear driving is the immense energy inefficiency. For sinusoidal driving into a purely capacitive load, the average power dissipated on the amplifier transistors is given by:
 \begin{equation}
 P_{diss} = \frac{4 \cdot V_{supply} \cdot V_{p} \cdot \omega \cdot C_{load}}{\pi}
+\label{eq:power_dissipation}
 \end{equation}
-This massive thermal dissipation strictly necessitates the use of large aluminum heatsinks, limiting the potential for miniaturization and mobile system deployment \cite{apex_linear}.
+This massive thermal dissipation from \eqref{eq:power_dissipation} strictly necessitates the use of large aluminum heatsinks, limiting the potential for miniaturization and mobile system deployment \cite{apex_linear}.
 
 \section{Switched Drivers based on GaN Half-Bridges (Class D)}
 Due to the thermal constraints of linear systems, wide-bandgap (WBG) materials, primarily Gallium Nitride (GaN), have come to the forefront of switched topology implementations.
 
 \subsection{Full-Bridge (BTL) Topology and Recuperation}
 The switched amplifier connects two integrated GaN half-bridges (forming a Full-Bridge or Bridge-Tied Load structure). The load is connected differentially between the outputs, doubling the effective voltage swing.
+In the presented switching arrangement, the upper transistor of one half-bridge is driven together with the lower transistor of the opposite half-bridge (diagonal pairing), while the complementary diagonal pair is switched in the opposite state. This corresponds to bipolar full-bridge switching as depicted in Fig. \ref{fig_gan_sch}.
 
 In practical hardware, this concept can be implemented using compact integrated GaN power stages, for example devices from the Navitas GaNFast family. A representative example is the NV6247C \cite{navitas_nv6247c}, which is intended for high-frequency half-bridge operation and integrates the fast GaN switching devices together with the associated gate-drive and protection infrastructure into a single compact power IC. Using two such half-bridge modules simplifies the realization of a full-bridge piezo driver, reduces parasitic loop inductance compared with a discrete implementation, and helps preserve the fast switching edges required for efficient operation.
 
@@ -145,53 +160,33 @@ The output LC low-pass filter ($L_f$, $C_f$) is unequivocally the most critical 
 The theoretical cutoff frequency $f_c$ of the second-order LC filter is defined as:
 \begin{equation}
 f_c = \frac{1}{2\pi\sqrt{L_f C_f}}
+\label{eq:lc_cutoff}
 \end{equation}
+Equation \eqref{eq:lc_cutoff} is taken from the standard LC filter relation used in switched-driver design \cite{LC_filter_design}.
 However, when driving piezoelectric actuators, the clamped capacitance of the actuator ($C_0$), running in parallel with the filter's physical capacitor, must be strictly accounted for. The effective cutoff frequency thus shifts lower to $f_{c,eff} = [2\pi\sqrt{L_f (C_f + C_0)}]^{-1}$.
 
-The selection of $L_f$ and $C_f$ represents a fundamental trade-off between the amplifier's control bandwidth and the residual high-frequency voltage ripple. Assuming a full-bridge (BTL) topology with unipolar PWM modulation, the maximum peak-to-peak voltage ripple (occurring at a 50\% duty cycle) can be approximated as:
+The selection of $L_f$ and $C_f$ represents a fundamental trade-off between the amplifier's control bandwidth and the residual high-frequency voltage ripple. Assuming a full-bridge (BTL) topology with bipolar PWM switching, the maximum peak-to-peak voltage ripple (occurring at a 50\% duty cycle) can be approximated as:
 \begin{equation}
-\Delta V_{out} \approx \frac{V_{supply}}{32 L_f (C_f + C_0) f_{sw}^2}
+\Delta V_{out} \approx \frac{V_{supply}}{16 L_f (C_f + C_0) f_{sw}^2}
+\label{eq:ripple_estimate}
 \end{equation}
+Equation \eqref{eq:ripple_estimate} follows the ripple approximation for PWM-driven LC outputs given in \cite{LC_filter_design}.
 Driving the GaN device at elevated switching frequencies ($f_{sw}$ in the MHz range) allows for a drastic reduction in $L_f$ and $C_f$ values \cite{LC_filter_design}. This not only minimizes the physical footprint and equivalent series resistance (ESR) losses of the inductors but also pushes the LC pole far beyond the mechanical resonance frequencies of the piezoelectric element. Consequently, this prevents unpredicted structural excitation and destructive delamination of the piezoceramic stack caused by switching harmonics.
 
-% \begin{table}[htbp]
-% \caption{Comparative Parameters of Linear and GaN Switched Topologies for Driving Piezo Actuators.}
-% \centering
-% \begin{tabular}{@{}p{0.25\columnwidth}p{0.3\columnwidth}p{0.3\columnwidth}@{}}
-% \toprule
-% \textbf{Parameter} & \textbf{Linear Driver (Class AB)} & \textbf{GaN Switched (Class D)} \\
-% \midrule
-% Efficiency & Very low (\textless 30\%), no recuperation & Extremely high (\textgreater 90\%), full recuperation \\
-% \midrule
-% Thermal Dissipation & Massive, heavy heatsink dependence & Low, copper vias on PCB often suffice \\
-% \midrule
-% Signal Purity / THD & Excellent reference standard (\textless 0.1\%) & Worse than AB, depends on dead-time \& LC filter \\
-% \midrule
-% Architecture & Low complexity & High complexity (PWM, drivers, LC filter) \\
-% \bottomrule
-% \end{tabular}
-% \label{tab_comparison}
-% \end{table}
-
 \section{Firmware Infrastructure and Signal Generation (STM32 HRTIM)}
-Precise positioning demands an ultra-fast digital control system capable of synthesizing PWM signals in the megahertz range with nanosecond resolution. The STM32H7 microcontroller utilizing the HRTIM (High-Resolution Timer) peripheral \cite{stm32_hrtim}, DMA, and LwIP networking stack performs this task effectively. The HRTIM directly fetches up to 16-bit payload values via DMA to dynamically manipulate the duty cycle (CMP registers) cycle by cycle, effectively operating as a high-frequency Power-DAC without burdening the primary CPU core.
+Precise positioning demands an ultra-fast digital control system capable of synthesizing PWM signals in the megahertz range with nanosecond resolution. The STM32H7 microcontroller utilizing the HRTIM (High-Resolution Timer) peripheral \cite{stm32_hrtim}, DMA, and LwIP networking stack performs this task effectively. The HRTIM directly fetches up to 16-bit payload values via DMA to dynamically manipulate the timer compare register values (CMP) cycle by cycle; the corresponding normalized duty cycle is given by $d = CMP/PER$. In this sense, the modulator effectively operates as a high-frequency Power-DAC without burdening the primary CPU core.
 
 \section{Waveform Validation and Iterative Tuning}
 For the studied application, the practical objective is not generic real-time signal synthesis, but repeated reproduction of a prescribed excitation waveform. In such a scenario, a measurement-driven workflow is more appropriate than assuming a purely predictive software-side correction model. The generated drive signal can be measured directly using an oscilloscope or another sufficiently fast sampling instrument, compared with the desired target waveform, and iteratively refined until the observed output matches the requirement.
 
 This approach is particularly effective when the system repeatedly amplifies a single fixed burst or pulse sequence. Once the response of the complete chain consisting of the PWM modulator, GaN power stage, output filter, interconnect, and piezoelectric load has been measured, the stored excitation vector can be adjusted offline and replayed identically in subsequent experiments. The method therefore shifts the optimization problem from real-time adaptive filtering to offline identification and refinement of a deterministic waveform, which is fully adequate for laboratory excitation of acoustic waves in solid metallic specimens.
 
-The measured transfer behavior between programmed PWM duty cycle and resulting output voltage is shown in Fig. \ref{fig_linearity}.
+The measured transfer behavior between programmed timer compare register values (CMP) and resulting output voltage is shown in Fig. \ref{fig_linearity}; duty cycle can be obtained as $d = CMP/PER$.
+In Fig. \ref{fig_linearity}, the dashed curve denotes the measured peak-to-peak output values ($V_{pp}$). The measurement is affected by noticeable uncertainty.
 
-% The resulting sample sequence is then transformed into a unipolar dataset corresponding to the timer limits:
-% \begin{equation}
-% CMP(n) = \text{round} \left( PER \cdot \left( \frac{y[n] + 1}{2} \right) \right)
-% \end{equation}
-
-% Placeholder pro vlozeny graf linearity z Pythonu
 \begin{figure}[htbp]
 \centerline{\includegraphics[width=0.8\columnwidth]{lintest.png}}
-\caption{Measured linearity of the output voltage relative to the programmed PWM duty cycle in an open-loop configuration, demonstrating the intrinsic high linearity of the GaN stage.}
+\caption{Measured linearity of the output voltage relative to the programmed timer compare register value (CMP) in an open-loop configuration. The dashed curve denotes measured peak-to-peak amplitudes ($V_{pp}$).}
 \label{fig_linearity}
 \end{figure}
 \section{Conclusion}

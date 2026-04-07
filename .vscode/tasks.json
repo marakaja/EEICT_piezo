@@ -4,7 +4,7 @@
         {
             "label": "Build LaTeX",
             "type": "shell",
-            "command": "pdflatex -synctex=1 -interaction=nonstopmode -file-line-error ${fileBasenameNoExtension}.tex && bibtex ${fileBasenameNoExtension} && pdflatex -synctex=1 -interaction=nonstopmode ${fileBasenameNoExtension}.tex && pdflatex -synctex=1 -interaction=nonstopmode ${fileBasenameNoExtension}.tex",
+            "command": "pdflatex -synctex=1 -interaction=nonstopmode -file-line-error ${fileBasenameNoExtension}.tex; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; bibtex ${fileBasenameNoExtension}; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; pdflatex -synctex=1 -interaction=nonstopmode ${fileBasenameNoExtension}.tex; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; pdflatex -synctex=1 -interaction=nonstopmode ${fileBasenameNoExtension}.tex; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }",
             "group": {
                 "kind": "build",
                 "isDefault": true
